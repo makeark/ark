@@ -453,36 +453,12 @@ export const Editor: FC<EditorProps> = (props) => {
 											}}
 											tooltipOptions={{
 												position: "bottom",
-												content: "Save",
+												content: "Save script",
 											}}
 										/>
 									</div>
 								)}
-								{!executing && (
-									<div className={"editor-header-item"}>
-										<Button
-											size="small"
-											icon={"play"}
-											onClick={() => exec(code)}
-											tooltipOptions={{
-												position: "bottom",
-												content: "Run",
-											}}
-										/>
-									</div>
-								)}
-								{executing && (
-									<Button
-										size="small"
-										icon={"stop"}
-										variant="danger"
-										onClick={() => terminateExecution()}
-										tooltipOptions={{
-											position: "bottom",
-											content: "Stop",
-										}}
-									/>
-								)}
+
 								<div className="editor-header-item">
 									<Button
 										size="small"
@@ -490,9 +466,37 @@ export const Editor: FC<EditorProps> = (props) => {
 										onClick={() => toggleExportDialog(true)}
 										tooltipOptions={{
 											position: "bottom",
-											content: "Export Script Result",
+											content: "Export script result",
 										}}
 									/>
+								</div>
+								<div className={"editor-header-item"}>
+									{executing ? (
+										<Button
+											size="small"
+											icon={"stop"}
+											variant="danger"
+											text="Stop"
+											onClick={() => terminateExecution()}
+											tooltipOptions={{
+												position: "bottom",
+												content: "Stop",
+											}}
+										/>
+									) : (
+										<Button
+											size="small"
+											variant="primary"
+											outlined
+											text="Run"
+											icon={"play"}
+											onClick={() => exec(code)}
+											tooltipOptions={{
+												position: "bottom",
+												content: "Run query",
+											}}
+										/>
+									)}
 								</div>
 							</>
 						)}

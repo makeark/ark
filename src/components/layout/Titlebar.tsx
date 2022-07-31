@@ -2,21 +2,7 @@ import "./styles.less";
 
 import React, { useCallback, useContext } from "react";
 import { Button } from "../../common/components/Button";
-import {
-	Menu,
-	MenuItem,
-	MenuDivider,
-	FormGroup,
-	FileInput,
-} from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
-import {
-	VscFileCode,
-	VscClose,
-	VscWatch,
-	VscTerminal,
-	VscKey,
-} from "react-icons/vsc";
+import { Menu, MenuItem, FormGroup, FileInput } from "@blueprintjs/core";
 import { useState } from "react";
 import { SelectConnectionForFilePath } from "../dialogs/SelectConnectionForScript";
 import { Dialog } from "../../common/components/Dialog";
@@ -24,6 +10,7 @@ import { Checkbox, InputGroup } from "@blueprintjs/core";
 import { notify } from "../../common/utils/misc";
 import { useEffect } from "react";
 import { SettingsContext } from "./BaseContextProvider";
+import { DropdownMenu } from "../../common/components/DropdownMenu";
 
 export interface EncryptionKey {
 	source: "userDefined" | "generated";
@@ -349,137 +336,130 @@ export const TitleBar = (): JSX.Element => {
 			)}
 			<div className="header-container">
 				<div className="logo">Ark</div>
-				<div>
-					<Popover2
-						content={
-							<Menu>
-								<MenuItem
-									text="Open Script"
-									onClick={() => {
-										window.ark
-											.browseForFile("Select A File", "Select")
-											.then((result) => {
-												const { path } = result;
-												setOpenScriptPath(path);
-											});
+				<DropdownMenu
+					position="bottom-right"
+					items={[
+						{
+							text: "Open Script",
+							onClick: () => {
+								window.ark
+									.browseForFile("Select A File", "Select")
+									.then((result) => {
+										const { path } = result;
+										setOpenScriptPath(path);
+									});
+							},
+							icon: "document-open",
+							key: "open_script",
+						},
+						{
+							title: "Connection Settings",
+							divider: true,
+							key: "divider_two",
+						},
+						{
+							text: "Encryption Key",
+							icon: "key",
+							key: "encryption",
+							onClick: () => showSecretKeyDialog(true),
+						},
+						{ title: "Editor Settings", divider: true, key: "divider_one" },
+						{
+							key: "shell_timeout",
+							text: "Query Timeout",
+							icon: "outdated",
+							onClick: () => setTimeoutDialog(true),
+						},
+						{
+							key: "result_tz",
+							text: "Result Timezone",
+							icon: "globe",
+							submenu: [
+								{
+									key: "tz_local",
+									text: "Local",
+									onClick: () =>
+										changeSettings<"timezone">("timezone", "local"),
+								},
+								{
+									key: "tz_utc",
+									text: "UTC",
+									onClick: () => changeSettings<"timezone">("timezone", "utc"),
+								},
+							],
+						},
+						{
+							key: "line_nos",
+							text: (
+								<Checkbox
+									style={{
+										marginRight: 0,
+										marginBottom: 0,
 									}}
-									icon={<VscFileCode />}
-									key="0"
+									checked={localSettings.lineNumbers}
+									label={"Show Line Numbers"}
+									onChange={(e) => {
+										const showLineNumbers = (e.target as HTMLInputElement)
+											.checked
+											? "on"
+											: "off";
+										changeSettings("lineNumbers", showLineNumbers);
+									}}
 								/>
-								<MenuDivider />
-								<MenuItem text="Timezone" icon={<VscWatch />} key="1">
-									<MenuItem
-										text="Local Timezone"
-										onClick={() =>
-											changeSettings<"timezone">("timezone", "local")
-										}
-									/>
-									<MenuItem
-										text="UTC"
-										onClick={() =>
-											changeSettings<"timezone">("timezone", "utc")
-										}
-									/>
-								</MenuItem>
-								<MenuDivider />
-								<MenuItem
-									text="Change Shell Timeout"
-									icon={<VscTerminal />}
-									key="2"
-									onClick={() => setTimeoutDialog(true)}
+							),
+						},
+						{
+							key: "minimap",
+							text: (
+								<Checkbox
+									style={{
+										marginRight: 0,
+										marginBottom: 0,
+									}}
+									checked={localSettings.miniMap}
+									label={"Show Mini Map"}
+									onChange={(e) => {
+										const showMiniMap = (e.target as HTMLInputElement).checked
+											? "on"
+											: "off";
+										changeSettings("miniMap", showMiniMap);
+									}}
 								/>
-								<MenuDivider />
-								<MenuItem
-									key="3"
-									text={
-										<Checkbox
-											checked={localSettings.lineNumbers}
-											label={"Show Line Numbers"}
-											onChange={(e) => {
-												const showLineNumbers = (e.target as HTMLInputElement)
-													.checked
-													? "on"
-													: "off";
-												changeSettings("lineNumbers", showLineNumbers);
-											}}
-										/>
-									}
+							),
+						},
+						{
+							key: "hotkeys",
+							text: (
+								<Checkbox
+									style={{
+										marginRight: 0,
+										marginBottom: 0,
+									}}
+									checked={localSettings.hotKeys}
+									label={"Enable Hot Keys"}
+									onChange={(e) => {
+										const enableHotkeys = (e.target as HTMLInputElement).checked
+											? "on"
+											: "off";
+										changeSettings("hotKeys", enableHotkeys);
+									}}
 								/>
-								<MenuDivider />
-								<MenuItem
-									key="4"
-									text={
-										<Checkbox
-											checked={localSettings.miniMap}
-											label={"Show Mini Map"}
-											onChange={(e) => {
-												const showMiniMap = (e.target as HTMLInputElement)
-													.checked
-													? "on"
-													: "off";
-												changeSettings("miniMap", showMiniMap);
-											}}
-										/>
-									}
-								/>
-								<MenuDivider />
-								<MenuItem
-									key="5"
-									text={
-										<Checkbox
-											checked={localSettings.hotKeys}
-											label={"Enable hotkeys"}
-											onChange={(e) => {
-												const enableHotkeys = (e.target as HTMLInputElement)
-													.checked
-													? "on"
-													: "off";
-												changeSettings("hotKeys", enableHotkeys);
-											}}
-										/>
-									}
-								/>
-								<MenuDivider />
-								<MenuItem
-									key="6"
-									text={
-										<Checkbox
-											checked={localSettings.autoUpdates}
-											label={"Auto Updates"}
-											onChange={(e) => {
-												const autoUpdates = (e.target as HTMLInputElement)
-													.checked
-													? "on"
-													: "off";
-												changeSettings("autoUpdates", autoUpdates);
-											}}
-										/>
-									}
-								/>
-								<MenuDivider />
-								<MenuItem
-									text="Encryption Key"
-									icon={<VscKey />}
-									key="7"
-									onClick={() => showSecretKeyDialog(true)}
-								/>
-								<MenuDivider />
-								<MenuItem
-									intent="danger"
-									text="Exit"
-									icon={<VscClose />}
-									key="8"
-									onClick={() => window.ark.titlebar.close()}
-								/>
-							</Menu>
-						}
-						interactionKind={"click"}
-					>
-						<div className="header-item">
-							<Button variant="link" size="small" text="Options" />
-						</div>
-					</Popover2>
-				</div>
+							),
+						},
+						{ divider: true, key: "divider_three" },
+						{
+							intent: "danger",
+							text: "Exit",
+							icon: "cross",
+							key: "exit",
+							onClick: () => window.ark.titlebar.close(),
+						},
+					]}
+				>
+					<div className="header-item">
+						<Button variant="link" size="small" icon="menu" />
+					</div>
+				</DropdownMenu>
 			</div>
 			<div className="header-draggable-area"></div>
 			<div className="header-container">
@@ -524,7 +504,7 @@ export const TitleBar = (): JSX.Element => {
 						changeSettings("shellTimeout", timeout);
 						setTimeoutDialog(false);
 					}}
-					title={"Change Shell Timeout"}
+					title={"Change Query Timeout"}
 				>
 					<div>
 						<InputGroup

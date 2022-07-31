@@ -4,62 +4,56 @@
 	border-radius: @border-radius;
 }
 
-.button-icon-wrapper {
-	display: flex !important;
-	padding: 4px;
-}
-
 .button-primary {
 	background: @button-color-primary !important;
-	color: @text-color;
+	color: @button-text-color !important;
+
 	&:hover {
-		background: @button-color-secondary !important;
+		background: @button-color-primary-hover !important;
 	}
 }
 
-.button-secondary {
-	background: @container-bg-color;
-	color: @text-color;
+.button-outlined {
+	border: 1px solid @highlight-color !important;
+}
+
+.button-none {
+	background: @container-bg-color !important;
+	color: @button-text-color !important;
 
 	&:hover {
+		background: @container-fg-color-bright !important;
 	}
 }
 
 .button-link {
-	color: @text-color !important;
+	color: @button-text-color !important;
 }
 
 .button-link-danger {
-	color: @text-color !important;
+	color: @button-text-color !important;
 	&:hover {
 		background-color: @button-color-danger !important;
 	}
 }
 
 .button-success {
-	background: @success;
-
-	&:hover {
-		background: @success-tint-1;
-	}
 }
 
 .button-danger {
-	background: @button-color-danger;
-
-	&:hover {
-		background: @button-color-danger;
-	}
 }
 
 .button-text-size-small {
 	font-size: @small-font-size;
+	height: 1.5rem;
 }
 
 .button-text-size-medium {
 	font-size: @medium-font-size;
+	height: 2rem;
 }
 
 .button-text-size-large {
 	font-size: @large-font-size;
+	height: 2rem;
 }

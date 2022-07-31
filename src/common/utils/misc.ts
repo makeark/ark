@@ -1,5 +1,5 @@
 import { dispatch } from "./events";
-import { Toaster, Intent } from "@blueprintjs/core";
+import { Toaster, Intent, IconName } from "@blueprintjs/core";
 import {
 	ERR_CODES,
 	getErrorMessageForCode,
@@ -52,28 +52,39 @@ interface ToastProps {
 }
 
 export const notify = (props: ToastProps): void => {
-	const { title, description, onClick, type } = props;
+	const { description, type } = props;
 
-	const intent: any = {
+	const intent: Record<string, Intent> = {
 		success: Intent.SUCCESS,
 		error: Intent.DANGER,
 		warning: Intent.WARNING,
 		info: Intent.NONE,
 	};
 
-	const icon: any = {
+	const icon: Record<string, IconName> = {
 		success: "tick-circle",
 		error: "error",
 		warning: "warning-sign",
 		info: "info-sign",
 	};
 
+	const timeout: Record<string, number> = {
+		success: 3000,
+		error: 10000,
+		warning: 5000,
+		info: 5000,
+	};
+
 	const toast = Toaster.create({
 		className: "toast",
-		position: "top-right",
 	});
 
-	toast.show({ message: description, intent: intent[type], icon: icon[type] });
+	toast.show({
+		message: description,
+		intent: intent[type],
+		icon: icon[type],
+		timeout: timeout[type],
+	});
 };
 
 export const handleErrors = (

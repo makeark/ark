@@ -1,10 +1,10 @@
 import "./styles.less";
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import Monaco from "@monaco-editor/react";
+const Monaco = React.lazy(() => import("@monaco-editor/react"));
 import { mountMonaco } from "./monaco";
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-// import { useHotkeys } from "react-hotkeys-hook";
+import MONACO_THEME from "../../common/styles/monaco-theme.json";
 
 export enum MONACO_COMMANDS {
 	CLONE_SHELL,
@@ -38,36 +38,39 @@ export const Shell: FC<ShellProps> = (props) => {
 
 	return (
 		<div className={"shell"}>
-			<Monaco
-				options={{
-					lineNumbers: settings?.lineNumbers === "off" ? "off" : "on",
-					minimap: {
-						enabled: settings?.miniMap === "on" ? true : false,
-					},
-				}}
-				theme={"ark"}
-				beforeMount={(monaco) => {
-					mountMonaco(monaco, { collections: allCollections });
-					monaco.editor.defineTheme("ark", {
-						base: "vs-dark",
-						inherit: true,
-						rules: [],
-						colors: {
-							"editor.background": "#111731",
-							foreground: "#e2e6f8",
+			<React.Suspense>
+				<Monaco
+					options={{
+						lineNumbers: settings?.lineNumbers === "off" ? "off" : "on",
+						minimap: {
+							enabled: settings?.miniMap === "on" ? true : false,
 						},
-					});
-				}}
-				onMount={(editor) => {
-					setMonacoEditor(editor);
-				}}
-				onChange={(value, ev) => {
-					value && onCodeChange(value);
-				}}
-				height="100%"
-				defaultValue={code}
-				defaultLanguage="typescript"
-			/>
+						contextmenu: false,
+						lightbulb: {
+							enabled: false,
+						},
+					}}
+					theme={"ark"}
+					beforeMount={(monaco) => {
+						mountMonaco(monaco, { collections: allCollections });
+						monaco.editor.defineTheme("ark", {
+							base: "vs-dark",
+							inherit: true,
+							rules: [],
+							colors: MONACO_THEME,
+						});
+					}}
+					onMount={(editor) => {
+						setMonacoEditor(editor);
+					}}
+					onChange={(value, ev) => {
+						value && onCodeChange(value);
+					}}
+					height="100%"
+					defaultValue={code}
+					defaultLanguage="typescript"
+				/>
+			</React.Suspense>
 		</div>
 	);
 };

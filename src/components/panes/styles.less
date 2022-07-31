@@ -5,7 +5,8 @@
 	width: 100%;
 	display: flex;
 	justify-content: center;
-	background-color: @container-fg-color;
+	background-color: @container-bg-color;
+	border-top: 1px solid @outline-color;
 	color: @text-color;
 
 	@container-width: 75%;
@@ -17,8 +18,8 @@
 		align-items: center;
 		align-self: center;
 		border: 1px solid #777;
-		height: 40px;
-		width: 40px;
+		height: 2.5rem;
+		width: 2.5rem;
 
 		span {
 			text-align: center;
@@ -34,8 +35,7 @@
 	.header {
 		display: flex;
 		justify-content: center;
-		gap: 10px;
-		padding: 30px;
+		padding: 2rem;
 		font-size: @large-font-size;
 		font-weight: 400;
 		text-align: center;
@@ -68,8 +68,8 @@
 
 	.form {
 		display: flex;
-		gap: 5px;
-		padding: 20px;
+		gap: 0.5rem;
+		padding: 1.5rem;
 		flex-direction: column;
 		width: 100%;
 
@@ -78,6 +78,7 @@
 		}
 
 		.input-field {
+			font-size: @small-font-size;
 			textarea {
 				width: 100%;
 			}
@@ -90,48 +91,15 @@
 		}
 	}
 
-	.separator {
-		display: flex;
-		gap: 10px;
-		padding: 20px 20px;
-		justify-content: center;
-		width: 100%;
-	}
-
 	.advanced-footer-row {
 		display: flex;
 		justify-content: space-between;
-		padding: 0px 20px 10px;
-		gap: 20px;
 	}
 
-	.button-advanced {
-		padding: 20px 20px;
-		font-size: @large-font-size;
-		font-weight: 400;
-		text-align: center;
+	.button-row {
+		display: flex;
+		justify-content: space-between;
 	}
-
-	.horizontal-line {
-		width: 33%;
-		height: 2px;
-		align-self: center;
-		background-color: #fff;
-	}
-}
-
-.Gap {
-	gap: 20px;
-}
-
-.AdvancedButton > * {
-	cursor: pointer;
-}
-
-.BackContainer {
-	display: flex;
-	align-items: center;
-	cursor: pointer;
 }
 
 .editor {
@@ -140,25 +108,37 @@
 	flex-grow: 1;
 	min-height: 0;
 	height: 100%;
+	font-size: @small-font-size;
 
 	color: @text-color;
+
+	@editor-height: 2rem;
 
 	.editor-header {
 		display: flex;
 		flex-grow: 1;
 		width: 100%;
+		flex-wrap: wrap;
 
-		// subtract this from .shell height
-		height: 38px;
-
-		padding: 6px;
+		height: @editor-height;
+		padding-right: 1rem;
+		padding-left: 1rem;
 
 		.editor-header-item {
 			height: 100%;
 			display: flex;
 			justify-content: space-evenly;
 			align-items: center;
-			padding: 0px 4px;
+			padding: 0px 0.25rem;
+		}
+	}
+
+	.shell {
+		height: calc(100% - @editor-height);
+		padding-right: 1rem;
+		padding-left: 1rem;
+		div {
+			border-radius: @border-radius !important;
 		}
 	}
 }

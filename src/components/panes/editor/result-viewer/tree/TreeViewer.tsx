@@ -1,7 +1,7 @@
 import "../styles.less";
 import "../../../../../common/styles/layout.less";
 
-import React, { FC, useState, useEffect, PropsWithChildren } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { ObjectId, serialize } from "bson";
 import { useCallback } from "react";
 import Bluebird from "bluebird";
@@ -20,7 +20,7 @@ import {
 	Code,
 	Collapse,
 } from "@blueprintjs/core";
-import { Select } from "@blueprintjs/select";
+import { Select2 } from "@blueprintjs/select";
 import { DateInput } from "@blueprintjs/datetime";
 import { Button } from "../../../../../common/components/Button";
 import { DangerousActionPrompt } from "../../../../dialogs/DangerousActionPrompt";
@@ -31,7 +31,7 @@ import {
 	isObjectId,
 	replaceQuotes,
 } from "../../../../../../util/misc";
-import { createContextMenuItems, CreateMenuItem } from "./ContextMenu";
+import { CreateMenuItem } from "../../../../../common/components/ContextMenu";
 
 interface BSONTest {
 	type:
@@ -145,7 +145,7 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 		return (
 			<div className="switchable-input">
 				{!commited && editable && (
-					<Select<SwitchableInputProps["initialType"]>
+					<Select2<SwitchableInputProps["initialType"]>
 						items={["boolean", "date", "number", "oid", "text"]}
 						itemRenderer={(item, { handleClick }) => (
 							<MenuItem key={item} onClick={handleClick} text={String(item)} />
@@ -159,7 +159,7 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 						}}
 					>
 						<Button icon={"exchange"} size="small" variant="link" />
-					</Select>
+					</Select2>
 				)}
 				<div className="switchable-input-child">{input}</div>
 				<div className="button-container">
@@ -220,7 +220,6 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 			jsx =
 				!commited && editable ? (
 					<InputGroup
-						small
 						defaultValue={input.toString()}
 						onChange={(e) => onValueChange(e.currentTarget.value)}
 						onKeyPress={(e) => (e.key === "Enter" ? commitRow() : undefined)}
@@ -237,7 +236,6 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 					<div className="object-id">
 						<span>{'ObjectId("'}</span>
 						<InputGroup
-							small
 							defaultValue={input.toString()}
 							onChange={(e) =>
 								onValueChange(new ObjectId(e.currentTarget.value))
@@ -294,7 +292,7 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 			const bool = !!editedValue as boolean;
 			jsx =
 				!commited && editable ? (
-					<Select<boolean>
+					<Select2<boolean>
 						items={[true, false]}
 						itemRenderer={(item, { handleClick }) => (
 							<MenuItem
@@ -310,7 +308,7 @@ const SwitchableInput: FC<SwitchableInputProps> = (props) => {
 						filterable={false}
 					>
 						<Button rightIcon="caret-down" text={String(bool)} />
-					</Select>
+					</Select2>
 				) : (
 					String(bool)
 				);
@@ -1085,7 +1083,6 @@ export const TreeViewer: FC<JSONViewerProps> = (props) => {
 					item: "Copy JSON",
 					cb: () =>
 						window.ark.copyText(replaceQuotes(formatBSONToText(document))),
-					intent: "primary",
 					icon: "comparison",
 					key: ContentRowActions.copy_json,
 				},
@@ -1115,7 +1112,6 @@ export const TreeViewer: FC<JSONViewerProps> = (props) => {
 								cb: () => {
 									discardChanges(document);
 								},
-								intent: "primary",
 								icon: "cross",
 								key: ContentRowActions.discard_edit,
 						  }
@@ -1124,14 +1120,13 @@ export const TreeViewer: FC<JSONViewerProps> = (props) => {
 								cb: () => {
 									startEditingDocument(document);
 								},
-								intent: "primary",
 								icon: "edit",
 								key: ContentRowActions.edit_document,
 						  }
 				);
 			}
 
-			return createContextMenuItems(items);
+			return items;
 		},
 		[discardChanges, docsBeingEdited, startEditingDocument]
 	);

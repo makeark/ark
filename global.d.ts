@@ -80,6 +80,12 @@ declare global {
 			uri?: string;
 		}
 
+		interface StoredScript {
+			id: string;
+			fullpath: string;
+			storedConnectionId?: string;
+		}
+
 		type AnyObject = BSONDocument | BSONArray;
 
 		type BSONTypes =

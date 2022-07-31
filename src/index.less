@@ -1,6 +1,6 @@
-@import "antd/dist/antd.less";
-
 @import "./common/styles/variables.less";
+@import "./common/styles/bp4-override.less";
+@import "./common/styles/monaco-override.less";
 
 :root {
 	font-weight: 500;
@@ -16,20 +16,25 @@
 		background-color: @container-fg-color-bright !important;
 		color: @text-color !important;
 
-		padding: 4px !important;
+		padding: 0.25rem !important;
 
 		&.multi-line {
 			display: block;
 			white-space: pre-wrap;
 		}
 	}
+
+	&:focus {
+		outline: none !important;
+		box-shadow: @input-box-shadow !important;
+	}
 }
 
 *::-webkit-scrollbar {
 	background-color: @scrollbar-bg-color;
-	// border-radius: @border-radius;
-	width: 10px;
-	height: 10px;
+	border-radius: @border-radius;
+	width: 0.33rem;
+	height: 0.33rem;
 }
 
 *::-webkit-scrollbar-thumb {
@@ -47,6 +52,8 @@
 html {
 	overflow: hidden;
 	display: flex;
+	height: 100%;
+	width: 100%;
 }
 
 body {
@@ -70,13 +77,13 @@ pre {
 	overflow: auto;
 	overflow-y: hidden;
 	font-size: @medium-font-size;
-	line-height: 20px;
+	line-height: @line-height;
 	border: 1px solid #777;
 	background: transparent repeat 0 0;
 }
 
 .resize-handle {
-	@handle-size: 6px;
+	@handle-size: 0.33rem;
 
 	border-radius: @border-radius;
 

@@ -24,8 +24,7 @@ import {
 	MemEntry,
 	ScriptActionData,
 	SettingsAction,
-	StoredScript,
-	TitlebarActions
+	TitlebarActions,
 } from "./types";
 import { ERR_CODES } from "../../../util/errors";
 import { ARK_FOLDER_PATH } from "../../utils/constants";
@@ -35,7 +34,6 @@ interface IPCInitParams {
 }
 
 function IPC() {
-
 	const iconStore = createDiskStore<Ark.StoredIcon>("icons");
 	const settingsStore = createDiskStore<Ark.Settings>("settings");
 
@@ -43,16 +41,16 @@ function IPC() {
 		memoryStore: createMemoryStore<MemEntry>(),
 		diskStore: createDiskStore<Ark.StoredConnection>("connections"),
 		iconStore,
-		settingsStore
+		settingsStore,
 	});
 
 	const shellManager = createShellManager({
 		driver,
-		store: createMemoryStore<StoredShellValue>()
+		store: createMemoryStore<StoredShellValue>(),
 	});
 
 	// Stores opened scripts
-	const scriptDiskStore = createDiskStore<StoredScript>("scripts");
+	const scriptDiskStore = createDiskStore<Ark.StoredScript>("scripts");
 
 	return {
 		init: ({ window }: IPCInitParams) => {
@@ -60,35 +58,38 @@ function IPC() {
 				...ipcHandlers<RunCommandInput>({
 					channel: "driver_run",
 					controller: driver.run,
-					onEventLog: (data) => `calling ${data.library}.${data.action}() ${data.args ? `args=${JSON.stringify(data.args).slice(0, 100)}` : ``}`
+					onEventLog: (data) =>
+						`calling ${data.library}.${data.action}() ${
+							data.args ? `args=${JSON.stringify(data.args).slice(0, 100)}` : ``
+						}`,
 				})
 			);
 
 			ipcMain.handle(
 				...ipcHandlers<CreateShell>({
 					channel: "shell_create",
-					controller: shellManager.create
+					controller: shellManager.create,
 				})
 			);
 
 			ipcMain.handle(
 				...ipcHandlers<InvokeJS>({
 					channel: "shell_eval",
-					controller: shellManager.eval
+					controller: shellManager.eval,
 				})
 			);
 
 			ipcMain.handle(
 				...ipcHandlers<ExportData>({
 					channel: "shell_export",
-					controller: shellManager.export
+					controller: shellManager.export,
 				})
 			);
 
 			ipcMain.handle(
 				...ipcHandlers<DestroyShell>({
 					channel: "shell_destroy",
-					controller: shellManager.destroy
+					controller: shellManager.destroy,
 				})
 			);
 
@@ -101,22 +102,22 @@ function IPC() {
 							const result = await dialog.showOpenDialog(window, {
 								title,
 								buttonLabel,
-								properties: ["openDirectory"]
+								properties: ["openDirectory"],
 							});
 							return {
-								dirs: result.filePaths
+								dirs: result.filePaths,
 							};
 						} else if (type === "file") {
 							const result = await dialog.showOpenDialog(window, {
 								title,
 								buttonLabel,
-								properties: ["openFile"]
+								properties: ["openFile"],
 							});
 							return {
-								path: result.filePaths[0]
+								path: result.filePaths[0],
 							};
 						}
-					}
+					},
 				})
 			);
 
@@ -125,7 +126,10 @@ function IPC() {
 					channel: "icon_actions",
 					controller: async (data) => {
 						if (data.action === "copy") {
-							const destinationPath = path.join(ARK_FOLDER_PATH, data.cacheFolder);
+							const destinationPath = path.join(
+								ARK_FOLDER_PATH,
+								data.cacheFolder
+							);
 
 							if (!fs.existsSync(destinationPath)) {
 								await fs.promises.mkdir(destinationPath);
@@ -134,47 +138,49 @@ function IPC() {
 							const destination = path.join(destinationPath, data.name);
 							await fs.promises.copyFile(data.source, destination);
 							return {
-								path: destination
-							}
+								path: destination,
+							};
 						} else if (data.action === "delete") {
 							await fs.promises.rm(data.path);
 						} else if (data.action === "get") {
 							const stored = await iconStore.get(data.id);
 							return stored;
 						}
-					}
+					},
 				})
-			)
+			);
 
 			ipcMain.handle(
 				...ipcHandlers<ScriptActionData>({
 					channel: "script_actions",
 					controller: async (data) => {
-						if (data.action === 'open') {
+						if (data.action === "open") {
 							const { fileLocation, storedConnectionId } = data.params;
 
 							if (fileLocation && storedConnectionId) {
-								const [fileName] = fileLocation.match(/(?<=\/)[ \w-]+?(\.)js/i) || [];
-								const code = (await fs.promises.readFile(fileLocation)).toString();
+								const [fileName] =
+									fileLocation.match(/(?<=\/)[ \w-]+?(\.)js/i) || [];
+								const code = (
+									await fs.promises.readFile(fileLocation)
+								).toString();
 
 								const id = nanoid();
 
-								const script: StoredScript = {
+								const script: Ark.StoredScript = {
 									id,
 									storedConnectionId,
-									fullpath: fileLocation
+									fullpath: fileLocation,
 								};
 
 								await scriptDiskStore.set(id, script);
 
 								return {
 									code,
-									script
+									script,
 								};
 							} else {
 								throw new Error(ERR_CODES.SCRIPTS$OPEN$INVALID_INPUT);
 							}
-
 						} else if (data.action === "save") {
 							const { code, id } = data.params;
 
@@ -186,15 +192,14 @@ function IPC() {
 
 							const { fullpath } = storedScript;
 
-							await fs.promises.writeFile(fullpath, code || '');
+							await fs.promises.writeFile(fullpath, code || "");
 
 							return storedScript;
 						} else if (data.action === "save_as") {
-
 							const result = await dialog.showSaveDialog(window, {
 								title: "Save Script",
 								buttonLabel: "Save as",
-								properties: ["showOverwriteConfirmation"]
+								properties: ["showOverwriteConfirmation"],
 							});
 
 							if (result.canceled) {
@@ -209,14 +214,14 @@ function IPC() {
 
 							const fullpath = result.filePath;
 
-							await fs.promises.writeFile(fullpath, code || '');
+							await fs.promises.writeFile(fullpath, code || "");
 
 							const id = nanoid();
 
-							const script: StoredScript = {
+							const script: Ark.StoredScript = {
 								id,
 								storedConnectionId,
-								fullpath
+								fullpath,
 							};
 
 							await scriptDiskStore.set(id, script);
@@ -226,9 +231,8 @@ function IPC() {
 							const { scriptId } = data.params;
 
 							await scriptDiskStore.remove(scriptId);
-
 						}
-					}
+					},
 				})
 			);
 
@@ -236,13 +240,13 @@ function IPC() {
 				...ipcHandlers<SettingsAction>({
 					channel: "settings_actions",
 					controller: async (data) => {
-						if (data.action === 'save') {
+						if (data.action === "save") {
 							const { settings } = data;
 							await settingsStore.set(data.type, settings);
-						} else if (data.action === 'fetch') {
+						} else if (data.action === "fetch") {
 							return await settingsStore.get(data.type);
 						}
-					}
+					},
 				})
 			);
 
@@ -250,22 +254,22 @@ function IPC() {
 				...ipcHandlers<TitlebarActions>({
 					channel: "title_actions",
 					controller: async (data) => {
-						if (data.action === 'close') {
+						if (data.action === "close") {
 							window.close();
 						} else if (data.action === "maximize") {
 							if (window.isMaximized()) {
-								window.unmaximize()
+								window.unmaximize();
 							} else {
 								window.maximize();
 							}
 						} else if (data.action === "minimize") {
 							window.minimize();
 						}
-					}
+					},
 				})
 			);
-		}
-	}
+		},
+	};
 }
 
 export default IPC();

@@ -1,0 +1,9 @@
+{
+    "editor.background": "#1a212c",
+    "editor.foreground": "#cad0d9",
+    "editor.selectionBackground": "#313741",
+    "editor.selectionForeground": "#313741",
+    "input.foreground": "#cad0d9",
+    "editorCodeLens.foreground": "#10141a",
+    "editorLineNumber.foreground": "#94a1b2"
+}

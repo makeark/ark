@@ -418,10 +418,21 @@ export function ConnectionForm(props: ConnectionFormProps): JSX.Element {
 	);
 
 	const TestAndSaveButtons = (
-		<ButtonGroup className="button-group">
-			<Button text="Test" variant="link" onClick={() => testURIConnection()} />
-			<Button text="Save" variant="primary" onClick={() => saveMongoURI()} />
-		</ButtonGroup>
+		<div className="button-row">
+			<Button
+				text="Advanced Settings"
+				variant="link"
+				onClick={() => setType("advanced")}
+			/>
+			<ButtonGroup className="button-group">
+				<Button
+					text="Test"
+					variant="link"
+					onClick={() => testURIConnection()}
+				/>
+				<Button text="Save" variant="primary" onClick={() => saveMongoURI()} />
+			</ButtonGroup>
+		</div>
 	);
 
 	const TestAndSaveAdvanced = (
@@ -507,20 +518,6 @@ export function ConnectionForm(props: ConnectionFormProps): JSX.Element {
 								/>
 							</FormGroup>
 							{TestAndSaveButtons}
-						</div>
-						<div className="separator">
-							<div className="horizontal-line"></div>
-							<div>
-								<span>OR</span>
-							</div>
-							<div className="horizontal-line"></div>
-						</div>
-						<div className="button-advanced">
-							<Button
-								text="Advanced Settings"
-								variant="link"
-								onClick={() => setType("advanced")}
-							/>
 						</div>
 					</div>
 				)}

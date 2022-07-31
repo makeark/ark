@@ -4,6 +4,7 @@
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
+	font-size: @small-font-size;
 
 	.help-text {
 		// text-align: center;
@@ -19,24 +20,25 @@
 	flex-direction: column;
 	flex-grow: 1;
 	min-height: 0;
+	font-size: @small-font-size;
 
-	@result-viewer-header-height: 40px;
+	@result-viewer-header-height: 3rem;
 
 	.result-viewer-header {
 		display: flex;
-		gap: 8px;
+		gap: 0.5rem;
 		align-self: end;
 		align-items: center;
 		justify-content: flex-end;
 		min-height: @result-viewer-header-height;
-		padding: 4px 14px;
+		padding: 0.25rem 0.5rem;
 		width: 100%;
 
 		.header-item {
 			display: flex;
-			gap: 4px;
+			gap: 0.25rem;
 			input {
-				width: 50px;
+				width: 2.5rem;
 				text-align: center;
 			}
 		}
@@ -46,19 +48,7 @@
 		display: flex;
 		min-height: calc(100% - @result-viewer-header-height);
 		width: 100%;
-		padding: 4px;
-
-		.bp4-control-group {
-			align-items: center;
-		}
-
-		.bp4-input-group.bp4-small .bp4-input {
-			height: 21px;
-		}
-
-		.bp4-input {
-			height: 21px;
-		}
+		padding: 0.25rem;
 	}
 
 	.tree-viewer {
@@ -66,21 +56,21 @@
 		flex-direction: column;
 		flex-grow: 1;
 		min-height: 0;
-		gap: 8px;
+		gap: 0.5rem;
 		/* To even out the margin-right on the header (.header) */
-		padding-left: 10px;
+		padding-left: 1rem;
 
-		@tree-view-header-height: 32px;
+		@tree-view-header-height: 2rem;
 
 		.header {
 			min-height: @tree-view-header-height;
 
-			padding: 6px;
+			padding: 0.5rem;
 			border-radius: @border-radius;
 			background-color: @container-bg-color;
 
 			/* To accomodate the overflow below the header (.content) */
-			margin-right: 10px;
+			margin-right: 1rem;
 		}
 
 		.content {
@@ -89,43 +79,39 @@
 			display: flex;
 			flex-direction: column;
 			flex-grow: 0;
-			padding: 6px;
+			padding: 0.5rem;
 			background-color: @container-bg-color;
 			border-radius: @border-radius;
 
 			height: calc(
-				100% - (@tree-view-header-height + @result-viewer-header-height + 8px)
+				100% -
+					(@tree-view-header-height + @result-viewer-header-height + 0.25rem)
 			);
 
 			.document-header-buttons {
 				display: flex;
 				* {
-					padding: 4px;
+					padding: 0.25rem;
 				}
 			}
 		}
 
-		.context-menu {
-			display: flex;
-			flex-grow: 1;
-		}
-
 		.content-row {
-			@content-row-modified-width: 30px;
+			@content-row-modified-width: 2rem;
 
 			display: flex;
 			flex-grow: 1;
 			justify-content: start;
 			align-items: center;
-			padding-top: 2px;
+			padding-top: 0.25rem;
 
-			min-height: 34px;
+			min-height: 1.5rem;
 
 			.key-delete {
-				height: 34px;
+				height: 1.5rem;
 				display: flex;
 				align-items: center;
-				padding: 4px 8px;
+				padding: 0.25rem 0.5rem;
 			}
 
 			.button-container {
@@ -134,12 +120,11 @@
 
 			.left {
 				width: 50%;
-				height: 34px;
+				height: 1.5rem;
 				display: flex;
 				align-items: center;
-				padding: 4px 8px;
-				border-radius: @border-radius;
-				border: 1px solid @outline-color;
+				padding: 0.25rem 0.5rem;
+				border-bottom: 1px solid @outline-color;
 				&:focus,
 				&:active,
 				&:hover {
@@ -149,12 +134,11 @@
 
 			.right {
 				width: 50%;
-				height: 34px;
+				height: 1.5rem;
 				display: flex;
 				align-items: center;
-				padding: 4px 8px;
-				border-radius: @border-radius;
-				border: 1px solid @outline-color;
+				padding: 0.25rem 0.5rem;
+				border-bottom: 1px solid @outline-color;
 				&:focus,
 				&:active,
 				&:hover {
@@ -175,7 +159,7 @@
 			display: flex;
 			flex-grow: 1;
 			align-items: center;
-			gap: 8px;
+			gap: 0.5rem;
 
 			span {
 				cursor: pointer;
@@ -200,26 +184,28 @@
 			border-radius: @border-radius;
 			background-color: @container-bg-color;
 
+			gap: 0.15rem;
+
 			.item {
 				cursor: pointer;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
 				width: 100%;
-				height: 34px;
+				height: 2rem;
 				border-radius: @border-radius;
 				background-color: @container-fg-color;
 				border: 1px solid @outline-color;
 
 				.handle {
-					padding: 2px;
-					margin: 2px;
+					padding: 0.25rem;
+					margin: 0.25rem;
 				}
 
 				&.primary {
 					background-color: @container-fg-color;
-					padding: 4px;
-					height: 38px;
+					padding: 0.25rem;
+					height: 2rem;
 					&:hover {
 						background-color: @container-fg-color-bright;
 					}
@@ -241,8 +227,8 @@
 			}
 
 			.panel {
-				padding-left: 8px;
-				padding-bottom: 8px;
+				padding-left: 0.5rem;
+				padding-bottom: 0.5rem;
 			}
 		}
 	}
@@ -253,7 +239,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		padding-left: 8px;
+		padding-left: 0.5rem;
 		div {
 			border-radius: @border-radius !important;
 		}

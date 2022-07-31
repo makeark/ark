@@ -4,8 +4,6 @@ import "./Dialog.less";
 import { Button } from "./Button";
 import { EventOverloadMethod } from "../utils/misc";
 
-import { Dialog as BPDialog } from "@blueprintjs/core";
-
 interface ModalProps {
 	size: "small" | "large";
 	variant?: "regular" | "danger";

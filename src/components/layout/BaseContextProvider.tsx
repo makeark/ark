@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Hotkeys } from "../../common/components/Hotkeys";
-import { TitleBar } from "./TitleBar";
+import { TitleBar } from "./Titlebar";
 
 export interface SettingsContextType {
 	settings?: Ark.Settings;

@@ -1,8 +1,10 @@
 import { Collapse, Icon, IconSize } from "@blueprintjs/core";
-import { ContextMenu2 } from "@blueprintjs/popover2";
 import React, { FC, PropsWithChildren, useState } from "react";
 import { Button } from "../../../../../common/components/Button";
-import { createContextMenuItems, CreateMenuItem } from "./ContextMenu";
+import {
+	ContextMenu,
+	CreateMenuItem,
+} from "../../../../../common/components/ContextMenu";
 
 export enum ContentRowActions {
 	copy_json = "copy_json",
@@ -33,7 +35,6 @@ export const DocumentField: FC<PropsWithChildren<ContentRowProps>> = (
 		{
 			item: "Copy",
 			key: "copy",
-			intent: "primary",
 			icon: "comparison",
 			submenu: [
 				{
@@ -72,14 +73,14 @@ export const DocumentField: FC<PropsWithChildren<ContentRowProps>> = (
 				? {
 						item: "Discard Edits",
 						cb: () => onContextMenuAction(ContentRowActions.discard_edit),
-						intent: "primary",
+
 						icon: "cross",
 						key: ContentRowActions.discard_edit,
 				  }
 				: {
 						item: "Inline Edit Document",
 						cb: () => onContextMenuAction(ContentRowActions.edit_document),
-						intent: "primary",
+
 						icon: "edit",
 						key: ContentRowActions.edit_document,
 				  }
@@ -87,17 +88,14 @@ export const DocumentField: FC<PropsWithChildren<ContentRowProps>> = (
 	}
 
 	return (
-		<ContextMenu2
-			className="context-menu"
-			content={createContextMenuItems(items)}
-		>
+		<ContextMenu items={items}>
 			<div className={"content-row"}>{children}</div>
-		</ContextMenu2>
+		</ContextMenu>
 	);
 };
 
 interface DocumentConfigHeader {
-	menu?: JSX.Element;
+	menu?: CreateMenuItem[];
 	primary?: boolean;
 	title: React.ReactNode | string;
 	key: string | number;
@@ -131,11 +129,7 @@ export const DocumentList: FC<DocumentTreeProps> = (props) => {
 		header: DocumentConfigHeader,
 		key: number
 	) => (
-		<ContextMenu2
-			key={header.key}
-			disabled={!header.menu}
-			content={header.menu}
-		>
+		<ContextMenu items={header.menu || []}>
 			<div
 				className={"item" + (header.primary ? " primary" : "")}
 				onClick={() => {
@@ -167,7 +161,7 @@ export const DocumentList: FC<DocumentTreeProps> = (props) => {
 					{jsx}
 				</div>
 			</Collapse>
-		</ContextMenu2>
+		</ContextMenu>
 	);
 
 	return (

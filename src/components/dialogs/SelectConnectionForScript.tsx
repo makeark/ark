@@ -1,9 +1,14 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import { useCallback } from "react";
+import { Button } from "../../common/components/Button";
 import { Dialog } from "../../common/components/Dialog";
 import { CircularLoading } from "../../common/components/Loading";
 import { dispatch } from "../../common/utils/events";
-import { ConnectionsList } from "../connection-controller/ConnectionController";
+import {
+	ConnectionsList,
+	notifyFailedConnection,
+	notifyFailedDisconnection,
+} from "../connection-controller/ConnectionController";
 import {
 	ConnectionsContext,
 	ManagedConnection,
@@ -20,7 +25,8 @@ export const SelectConnectionForFilePath: FC<
 > = ({ path, onClose }) => {
 	const [loading, setLoading] = useState(false);
 
-	const { connections, load, connect } = useContext(ConnectionsContext);
+	const { connections, load, connect, disconnect } =
+		useContext(ConnectionsContext);
 
 	const [databaseOptions, setDatabaseOptions] = useState<
 		(string | undefined)[]
@@ -28,7 +34,7 @@ export const SelectConnectionForFilePath: FC<
 	const [code, setCode] = useState<string>();
 	const [selectedStoredConnection, setSelectedStoredConnection] =
 		useState<ManagedConnection>();
-	const [storedScript, setStoredScript] = useState<StoredScript>();
+	const [storedScript, setStoredScript] = useState<Ark.StoredScript>();
 
 	const openShell = useCallback(
 		(database) => {
@@ -64,11 +70,11 @@ export const SelectConnectionForFilePath: FC<
 
 	return (
 		<Dialog
-			size="large"
+			size={databaseOptions && databaseOptions.length ? "small" : "large"}
 			title={
 				databaseOptions && databaseOptions.length
-					? "Select a database"
-					: "Select a connection"
+					? "Select a Database"
+					: "Select a Connection"
 			}
 			onCancel={onClose}
 			noFooter
@@ -76,43 +82,71 @@ export const SelectConnectionForFilePath: FC<
 			{loading ? (
 				<CircularLoading />
 			) : databaseOptions && databaseOptions.length ? (
-				<div>
-					{databaseOptions.map((option) => (
-						<button key={option} onClick={() => openShell(option)}>
-							{option}
-						</button>
-					))}
+				<div className="database-select-list">
+					<div className="database-list">
+						{databaseOptions.map((option) => (
+							<Button
+								key={option}
+								onClick={() => openShell(option)}
+								text={option}
+							/>
+						))}
+					</div>
+					<Button
+						key="back"
+						icon="caret-left"
+						onClick={() => {
+							setDatabaseOptions([]);
+							setSelectedStoredConnection(undefined);
+						}}
+					/>
 				</div>
 			) : (
-				<ConnectionsList
-					connections={connections}
-					listViewMode="compact"
-					onConnect={(conn) => {
-						return window.ark.scripts
-							.open({
-								fileLocation: path,
-								storedConnectionId: conn.id,
-							})
-							.then((result) => {
-								const { code: storedCode, script } = result;
-								return connect(conn.id).then((connection) => {
-									if (connection) {
-										return window.ark.driver
-											.run("connection", "listDatabases", { id: conn.id })
-											.then((result) => {
-												const databases: string[] = result.map(
-													(database) => database.name
-												);
-												setDatabaseOptions(databases);
-												setCode(storedCode);
-												setSelectedStoredConnection(connection);
-												setStoredScript(script);
-											});
-									}
+				<div className="container">
+					<ConnectionsList
+						connections={connections}
+						listViewMode="compact"
+						onConnect={(conn) => {
+							return window.ark.scripts
+								.open({
+									fileLocation: path,
+									storedConnectionId: conn.id,
+								})
+								.then((result) => {
+									const { code, script } = result;
+									return connect(conn.id).then((connection) => {
+										if (connection)
+											return window.ark.driver
+												.run("connection", "listDatabases", {
+													id: connection.id,
+												})
+												.then((result) => {
+													const databases: string[] = result.map(
+														(database) => database.name
+													);
+													setDatabaseOptions(databases);
+													setCode(code);
+													setSelectedStoredConnection(connection);
+													setStoredScript(script);
+												});
+									});
 								});
-							});
-					}}
-				/>
+						}}
+						onConnectCallback={(err) => {
+							if (err) {
+								notifyFailedConnection(err);
+							}
+						}}
+						onDisconnect={(conn) => disconnect(conn.id)}
+						onDisconnectCallback={(err) => {
+							if (err) {
+								notifyFailedDisconnection(err);
+							} else {
+								setSelectedStoredConnection(undefined);
+							}
+						}}
+					/>
+				</div>
 			)}
 		</Dialog>
 	);

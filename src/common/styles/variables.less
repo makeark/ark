@@ -1,54 +1,51 @@
-// Color definitions
+// Size definitions
 
-// old
-// @primary-tint-1: #dce5f5;
-// @primary-tint-2: #bcccec;
-// @primary-tint-3: #8a9dc7;
-// @primary-tint-4: #58688f;
-// @primary-tint-5: #18203b;
-// @primary-tint-6: #111731;
-// @primary-tint-7: #0a1028;
-// @primary-tint-8: #060a21;
-
-@small-font-size: 0.8rem;
+@small-font-size: 0.9rem;
 @medium-font-size: 1rem;
 @large-font-size: 1.2rem;
 @massive-font-size: 2rem;
 
-@white-tint-1: #e2e6f8;
-@white-tint-2: #d7dcf4;
+@line-height: 1.2rem;
 
-@primary-tint-1: #455576;
-@primary-tint-2: #324165;
+@border-radius: 0.25rem;
 
-@secondary-tint-1: #222b45;
-@secondary-tint-2: #18203b;
-@secondary-tint-3: #111731;
-@secondary-tint-4: #0a1028;
+// Color definitions
 
-@success: #16825d;
-@success-tint-1: #199c6e;
-@danger: #b71e47;
+@primary-color: #6749c2;
+@secondary-color: #313741;
+@highlight-color: #8e74e0;
+
+@background-color: #10141a;
+@background-color-2: #1a212c;
+
+@success-color: #16825d;
+@success-highlight: #199c6e;
+
+@danger-color: #b71e47;
 @danger-tint-1: #db2c4a;
 
-// Attribute / Property definitions
+@text-color: #cad0d9;
+@subtext-color: #94a1b2;
 
-@text-color: @white-tint-1;
-@subtext-color: @white-tint-2;
-@link-color: @primary-tint-1;
+@container-bg-color: @background-color;
+@container-fg-color: @background-color-2;
+@container-fg-color-bright: @secondary-color;
 
-@container-bg-color: @secondary-tint-3;
-@container-fg-color: @secondary-tint-2;
-@container-fg-color-bright: @secondary-tint-1;
+@button-text-color: @text-color;
+@button-color-primary: @primary-color;
+@button-color-primary-hover: @highlight-color;
+@button-color-secondary: @secondary-color;
+@button-color-danger: @danger-color;
 
-@button-color-primary: @primary-tint-1;
-@button-color-secondary: @primary-tint-2;
-@button-color-danger: @danger;
-
-@outline-color: @secondary-tint-4;
+@outline-color: @background-color-2;
+@link-color: @highlight-color;
 @shadow-color: black;
-@box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-@border-radius: 5px;
 
 @scrollbar-bg-color: transparent;
-@scrollbar-thumb-color: @primary-tint-2;
+@scrollbar-thumb-color: @secondary-color;
+
+// Full CSS Properties
+
+@box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+@input-box-shadow: inset 0 0 0 1px shade(@highlight-color, 50%),
+	0 0 0 1px shade(@highlight-color, 60%);
